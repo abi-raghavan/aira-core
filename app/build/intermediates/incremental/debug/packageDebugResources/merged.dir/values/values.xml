@@ -2,7 +2,7 @@
 <resources>
     <color name="ic_launcher_background">#FFFFFF</color>
     <string name="app_name">Calm Companion</string>
-    <style name="Theme.CalmCompanion" parent="android:Theme.Material.Light.NoActionBar">
+    <style name="Theme.AIRA" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>

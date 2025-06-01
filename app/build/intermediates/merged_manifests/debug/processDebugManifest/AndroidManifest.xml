@@ -5,12 +5,13 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="26"
+        android:minSdkVersion="24"
         android:targetSdkVersion="34" />
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
 
     <permission
         android:name="com.example.calmcompanion.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
@@ -28,11 +29,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:testOnly="true"
-        android:theme="@style/Theme.CalmCompanion" >
+        android:theme="@style/Theme.AIRA" >
+        <service
+            android:name="com.example.calmcompanion.AudioRecorderService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="microphone" />
+
         <activity
             android:name="com.example.calmcompanion.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.CalmCompanion" >
+            android:theme="@style/Theme.AIRA" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
