@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.calmcompanion"
-        minSdk = 26
+        minSdk = 24
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -20,13 +20,23 @@ android {
         }
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = file("keystore/calmcompanion.keystore")
+            storePassword = "calmcompanion"
+            keyAlias = "calmcompanion"
+            keyPassword = "calmcompanion"
+        }
+    }
+
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {

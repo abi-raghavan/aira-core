@@ -1,0 +1,4 @@
+#Sun Jun 01 19:42:08 IST 2025
+base.0=/Users/araghavan/Documents/abi/ArLab/aira-core/app/build/intermediates/dex/release/minifyReleaseWithR8/classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
