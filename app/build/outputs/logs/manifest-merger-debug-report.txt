@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:2:1-33:12
-INJECTED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:2:1-33:12
-INJECTED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:2:1-33:12
-INJECTED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:2:1-33:12
+ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:2:1-38:12
+INJECTED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:2:1-38:12
+INJECTED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:2:1-38:12
+INJECTED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:2:1-38:12
 MERGED from [androidx.compose.material3:material3:1.1.1] /Users/araghavan/.gradle/caches/8.12/transforms/35dbc902beaa6a10737cd54dfcb6cf66/transformed/jetified-material3-1.1.1/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.compose.material:material-ripple-android:1.5.0] /Users/araghavan/.gradle/caches/8.12/transforms/eccc4fe3477eeec3b3ce0336b840f528/transformed/jetified-material-ripple-release/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.material:material-icons-core-android:1.5.0] /Users/araghavan/.gradle/caches/8.12/transforms/5a80835cb89ed3c1bc6c59c639025677/transformed/jetified-material-icons-core-release/AndroidManifest.xml:2:1-7:12
@@ -72,9 +72,25 @@ uses-permission#android.permission.FOREGROUND_SERVICE_MICROPHONE
 ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:7:5-88
 	android:name
 		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:7:22-85
+uses-permission#android.permission.READ_MEDIA_AUDIO
+ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:9:5-75
+	android:name
+		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:9:22-72
+uses-permission#android.permission.READ_EXTERNAL_STORAGE
+ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:11:5-107
+	android:maxSdkVersion
+		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:11:78-104
+	android:name
+		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:11:22-77
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:12:5-108
+	android:maxSdkVersion
+		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:12:79-105
+	android:name
+		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:12:22-78
 application
-ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:9:5-32:19
-INJECTED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:9:5-32:19
+ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:14:5-37:19
+INJECTED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:14:5-37:19
 MERGED from [androidx.compose.ui:ui-test-manifest:1.5.0] /Users/araghavan/.gradle/caches/8.12/transforms/d407ebddaba21bf81989abf1a7cf83cf/transformed/jetified-ui-test-manifest-1.5.0/AndroidManifest.xml:22:5-26:19
 MERGED from [androidx.compose.ui:ui-test-manifest:1.5.0] /Users/araghavan/.gradle/caches/8.12/transforms/d407ebddaba21bf81989abf1a7cf83cf/transformed/jetified-ui-test-manifest-1.5.0/AndroidManifest.xml:22:5-26:19
 MERGED from [androidx.compose.ui:ui-tooling-android:1.5.0] /Users/araghavan/.gradle/caches/8.12/transforms/89aba71f8548899424a6eccda5b675ab/transformed/jetified-ui-tooling-release/AndroidManifest.xml:22:5-26:19
@@ -96,45 +112,45 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/araghavan/.gradle/ca
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.12.0] /Users/araghavan/.gradle/caches/8.12/transforms/0b53b498c96d01e711bbcc5a8f37540d/transformed/core-1.12.0/AndroidManifest.xml:28:18-86
 	android:supportsRtl
-		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:14:9-35
+		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:19:9-35
 	android:label
-		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:12:9-41
+		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:17:9-41
 	android:roundIcon
-		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:13:9-54
+		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:18:9-54
 	android:icon
-		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:11:9-43
+		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:16:9-43
 	android:allowBackup
-		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:10:9-35
+		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:15:9-35
 	android:theme
-		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:15:9-42
+		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:20:9-42
 service#com.example.calmcompanion.AudioRecorderService
-ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:17:9-21:58
+ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:22:9-26:58
 	android:enabled
-		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:19:13-35
+		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:24:13-35
 	android:exported
-		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:20:13-37
+		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:25:13-37
 	android:foregroundServiceType
-		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:21:13-55
+		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:26:13-55
 	android:name
-		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:18:13-49
+		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:23:13-49
 activity#com.example.calmcompanion.MainActivity
-ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:23:9-31:20
+ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:28:9-36:20
 	android:exported
-		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:25:13-36
+		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:30:13-36
 	android:theme
-		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:26:13-46
+		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:31:13-46
 	android:name
-		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:24:13-41
+		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:29:13-41
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:27:13-30:29
+ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:32:13-35:29
 action#android.intent.action.MAIN
-ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:28:17-69
+ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:33:17-69
 	android:name
-		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:28:25-66
+		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:33:25-66
 category#android.intent.category.LAUNCHER
-ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:29:17-77
+ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:34:17-77
 	android:name
-		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:29:27-74
+		ADDED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:34:27-74
 uses-sdk
 INJECTED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml

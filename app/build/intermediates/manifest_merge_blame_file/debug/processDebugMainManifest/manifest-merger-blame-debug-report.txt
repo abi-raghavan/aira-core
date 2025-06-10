@@ -20,145 +20,162 @@
 14    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
 14-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:7:5-88
 14-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:7:22-85
-15
-16    <permission
-16-->[androidx.core:core:1.12.0] /Users/araghavan/.gradle/caches/8.12/transforms/0b53b498c96d01e711bbcc5a8f37540d/transformed/core-1.12.0/AndroidManifest.xml:22:5-24:47
-17        android:name="com.example.calmcompanion.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
-17-->[androidx.core:core:1.12.0] /Users/araghavan/.gradle/caches/8.12/transforms/0b53b498c96d01e711bbcc5a8f37540d/transformed/core-1.12.0/AndroidManifest.xml:23:9-81
-18        android:protectionLevel="signature" />
-18-->[androidx.core:core:1.12.0] /Users/araghavan/.gradle/caches/8.12/transforms/0b53b498c96d01e711bbcc5a8f37540d/transformed/core-1.12.0/AndroidManifest.xml:24:9-44
-19
-20    <uses-permission android:name="com.example.calmcompanion.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
-20-->[androidx.core:core:1.12.0] /Users/araghavan/.gradle/caches/8.12/transforms/0b53b498c96d01e711bbcc5a8f37540d/transformed/core-1.12.0/AndroidManifest.xml:26:5-97
-20-->[androidx.core:core:1.12.0] /Users/araghavan/.gradle/caches/8.12/transforms/0b53b498c96d01e711bbcc5a8f37540d/transformed/core-1.12.0/AndroidManifest.xml:26:22-94
-21
-22    <application
-22-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:9:5-32:19
-23        android:allowBackup="true"
-23-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:10:9-35
-24        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
-24-->[androidx.core:core:1.12.0] /Users/araghavan/.gradle/caches/8.12/transforms/0b53b498c96d01e711bbcc5a8f37540d/transformed/core-1.12.0/AndroidManifest.xml:28:18-86
-25        android:debuggable="true"
-26        android:extractNativeLibs="false"
-27        android:icon="@mipmap/ic_launcher"
-27-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:11:9-43
-28        android:label="@string/app_name"
-28-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:12:9-41
-29        android:roundIcon="@mipmap/ic_launcher_round"
-29-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:13:9-54
-30        android:supportsRtl="true"
-30-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:14:9-35
-31        android:testOnly="true"
-32        android:theme="@style/Theme.AIRA" >
-32-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:15:9-42
-33        <service
-33-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:17:9-21:58
-34            android:name="com.example.calmcompanion.AudioRecorderService"
-34-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:18:13-49
-35            android:enabled="true"
-35-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:19:13-35
-36            android:exported="false"
-36-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:20:13-37
-37            android:foregroundServiceType="microphone" />
-37-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:21:13-55
-38
-39        <activity
-39-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:23:9-31:20
-40            android:name="com.example.calmcompanion.MainActivity"
-40-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:24:13-41
-41            android:exported="true"
-41-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:25:13-36
-42            android:theme="@style/Theme.AIRA" >
-42-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:26:13-46
-43            <intent-filter>
-43-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:27:13-30:29
-44                <action android:name="android.intent.action.MAIN" />
-44-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:28:17-69
-44-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:28:25-66
-45
-46                <category android:name="android.intent.category.LAUNCHER" />
-46-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:29:17-77
-46-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:29:27-74
-47            </intent-filter>
-48        </activity>
-49        <activity
-49-->[androidx.compose.ui:ui-test-manifest:1.5.0] /Users/araghavan/.gradle/caches/8.12/transforms/d407ebddaba21bf81989abf1a7cf83cf/transformed/jetified-ui-test-manifest-1.5.0/AndroidManifest.xml:23:9-25:39
-50            android:name="androidx.activity.ComponentActivity"
-50-->[androidx.compose.ui:ui-test-manifest:1.5.0] /Users/araghavan/.gradle/caches/8.12/transforms/d407ebddaba21bf81989abf1a7cf83cf/transformed/jetified-ui-test-manifest-1.5.0/AndroidManifest.xml:24:13-63
-51            android:exported="true" />
-51-->[androidx.compose.ui:ui-test-manifest:1.5.0] /Users/araghavan/.gradle/caches/8.12/transforms/d407ebddaba21bf81989abf1a7cf83cf/transformed/jetified-ui-test-manifest-1.5.0/AndroidManifest.xml:25:13-36
-52        <activity
-52-->[androidx.compose.ui:ui-tooling-android:1.5.0] /Users/araghavan/.gradle/caches/8.12/transforms/89aba71f8548899424a6eccda5b675ab/transformed/jetified-ui-tooling-release/AndroidManifest.xml:23:9-25:39
-53            android:name="androidx.compose.ui.tooling.PreviewActivity"
-53-->[androidx.compose.ui:ui-tooling-android:1.5.0] /Users/araghavan/.gradle/caches/8.12/transforms/89aba71f8548899424a6eccda5b675ab/transformed/jetified-ui-tooling-release/AndroidManifest.xml:24:13-71
-54            android:exported="true" />
-54-->[androidx.compose.ui:ui-tooling-android:1.5.0] /Users/araghavan/.gradle/caches/8.12/transforms/89aba71f8548899424a6eccda5b675ab/transformed/jetified-ui-tooling-release/AndroidManifest.xml:25:13-36
-55
-56        <provider
-56-->[androidx.emoji2:emoji2:1.4.0] /Users/araghavan/.gradle/caches/8.12/transforms/190a5571585ff740a1626cfe7c2130f3/transformed/jetified-emoji2-1.4.0/AndroidManifest.xml:24:9-32:20
-57            android:name="androidx.startup.InitializationProvider"
-57-->[androidx.emoji2:emoji2:1.4.0] /Users/araghavan/.gradle/caches/8.12/transforms/190a5571585ff740a1626cfe7c2130f3/transformed/jetified-emoji2-1.4.0/AndroidManifest.xml:25:13-67
-58            android:authorities="com.example.calmcompanion.androidx-startup"
-58-->[androidx.emoji2:emoji2:1.4.0] /Users/araghavan/.gradle/caches/8.12/transforms/190a5571585ff740a1626cfe7c2130f3/transformed/jetified-emoji2-1.4.0/AndroidManifest.xml:26:13-68
-59            android:exported="false" >
-59-->[androidx.emoji2:emoji2:1.4.0] /Users/araghavan/.gradle/caches/8.12/transforms/190a5571585ff740a1626cfe7c2130f3/transformed/jetified-emoji2-1.4.0/AndroidManifest.xml:27:13-37
-60            <meta-data
-60-->[androidx.emoji2:emoji2:1.4.0] /Users/araghavan/.gradle/caches/8.12/transforms/190a5571585ff740a1626cfe7c2130f3/transformed/jetified-emoji2-1.4.0/AndroidManifest.xml:29:13-31:52
-61                android:name="androidx.emoji2.text.EmojiCompatInitializer"
-61-->[androidx.emoji2:emoji2:1.4.0] /Users/araghavan/.gradle/caches/8.12/transforms/190a5571585ff740a1626cfe7c2130f3/transformed/jetified-emoji2-1.4.0/AndroidManifest.xml:30:17-75
-62                android:value="androidx.startup" />
-62-->[androidx.emoji2:emoji2:1.4.0] /Users/araghavan/.gradle/caches/8.12/transforms/190a5571585ff740a1626cfe7c2130f3/transformed/jetified-emoji2-1.4.0/AndroidManifest.xml:31:17-49
-63            <meta-data
-63-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/araghavan/.gradle/caches/8.12/transforms/5c0fe83afc75d1c8a9709c5cae78c080/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:29:13-31:52
-64                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
-64-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/araghavan/.gradle/caches/8.12/transforms/5c0fe83afc75d1c8a9709c5cae78c080/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:30:17-78
-65                android:value="androidx.startup" />
-65-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/araghavan/.gradle/caches/8.12/transforms/5c0fe83afc75d1c8a9709c5cae78c080/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:31:17-49
-66            <meta-data
-66-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:29:13-31:52
-67                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
-67-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:30:17-85
-68                android:value="androidx.startup" />
-68-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:31:17-49
-69        </provider>
-70
-71        <receiver
-71-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:34:9-52:20
-72            android:name="androidx.profileinstaller.ProfileInstallReceiver"
-72-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:35:13-76
-73            android:directBootAware="false"
-73-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:36:13-44
-74            android:enabled="true"
-74-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:37:13-35
-75            android:exported="true"
-75-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:38:13-36
-76            android:permission="android.permission.DUMP" >
-76-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:39:13-57
-77            <intent-filter>
-77-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:40:13-42:29
-78                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
-78-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:41:17-91
-78-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:41:25-88
-79            </intent-filter>
-80            <intent-filter>
-80-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:43:13-45:29
-81                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
-81-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:44:17-85
-81-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:44:25-82
-82            </intent-filter>
-83            <intent-filter>
-83-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:46:13-48:29
-84                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
-84-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:47:17-88
-84-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:47:25-85
-85            </intent-filter>
+15    <!-- For Android 13+ -->
+16    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+16-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:9:5-75
+16-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:9:22-72
+17    <!-- For Android 12 and below -->
+18    <uses-permission
+18-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:11:5-107
+19        android:name="android.permission.READ_EXTERNAL_STORAGE"
+19-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:11:22-77
+20        android:maxSdkVersion="32" />
+20-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:11:78-104
+21    <uses-permission
+21-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:12:5-108
+22        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+22-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:12:22-78
+23        android:maxSdkVersion="32" />
+23-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:12:79-105
+24
+25    <permission
+25-->[androidx.core:core:1.12.0] /Users/araghavan/.gradle/caches/8.12/transforms/0b53b498c96d01e711bbcc5a8f37540d/transformed/core-1.12.0/AndroidManifest.xml:22:5-24:47
+26        android:name="com.example.calmcompanion.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+26-->[androidx.core:core:1.12.0] /Users/araghavan/.gradle/caches/8.12/transforms/0b53b498c96d01e711bbcc5a8f37540d/transformed/core-1.12.0/AndroidManifest.xml:23:9-81
+27        android:protectionLevel="signature" />
+27-->[androidx.core:core:1.12.0] /Users/araghavan/.gradle/caches/8.12/transforms/0b53b498c96d01e711bbcc5a8f37540d/transformed/core-1.12.0/AndroidManifest.xml:24:9-44
+28
+29    <uses-permission android:name="com.example.calmcompanion.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+29-->[androidx.core:core:1.12.0] /Users/araghavan/.gradle/caches/8.12/transforms/0b53b498c96d01e711bbcc5a8f37540d/transformed/core-1.12.0/AndroidManifest.xml:26:5-97
+29-->[androidx.core:core:1.12.0] /Users/araghavan/.gradle/caches/8.12/transforms/0b53b498c96d01e711bbcc5a8f37540d/transformed/core-1.12.0/AndroidManifest.xml:26:22-94
+30
+31    <application
+31-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:14:5-37:19
+32        android:allowBackup="true"
+32-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:15:9-35
+33        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+33-->[androidx.core:core:1.12.0] /Users/araghavan/.gradle/caches/8.12/transforms/0b53b498c96d01e711bbcc5a8f37540d/transformed/core-1.12.0/AndroidManifest.xml:28:18-86
+34        android:debuggable="true"
+35        android:extractNativeLibs="false"
+36        android:icon="@mipmap/ic_launcher"
+36-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:16:9-43
+37        android:label="@string/app_name"
+37-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:17:9-41
+38        android:roundIcon="@mipmap/ic_launcher_round"
+38-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:18:9-54
+39        android:supportsRtl="true"
+39-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:19:9-35
+40        android:testOnly="true"
+41        android:theme="@style/Theme.AIRA" >
+41-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:20:9-42
+42        <service
+42-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:22:9-26:58
+43            android:name="com.example.calmcompanion.AudioRecorderService"
+43-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:23:13-49
+44            android:enabled="true"
+44-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:24:13-35
+45            android:exported="false"
+45-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:25:13-37
+46            android:foregroundServiceType="microphone" />
+46-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:26:13-55
+47
+48        <activity
+48-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:28:9-36:20
+49            android:name="com.example.calmcompanion.MainActivity"
+49-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:29:13-41
+50            android:exported="true"
+50-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:30:13-36
+51            android:theme="@style/Theme.AIRA" >
+51-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:31:13-46
+52            <intent-filter>
+52-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:32:13-35:29
+53                <action android:name="android.intent.action.MAIN" />
+53-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:33:17-69
+53-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:33:25-66
+54
+55                <category android:name="android.intent.category.LAUNCHER" />
+55-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:34:17-77
+55-->/Users/araghavan/Documents/abi/ArLab/aira-core/app/src/main/AndroidManifest.xml:34:27-74
+56            </intent-filter>
+57        </activity>
+58        <activity
+58-->[androidx.compose.ui:ui-test-manifest:1.5.0] /Users/araghavan/.gradle/caches/8.12/transforms/d407ebddaba21bf81989abf1a7cf83cf/transformed/jetified-ui-test-manifest-1.5.0/AndroidManifest.xml:23:9-25:39
+59            android:name="androidx.activity.ComponentActivity"
+59-->[androidx.compose.ui:ui-test-manifest:1.5.0] /Users/araghavan/.gradle/caches/8.12/transforms/d407ebddaba21bf81989abf1a7cf83cf/transformed/jetified-ui-test-manifest-1.5.0/AndroidManifest.xml:24:13-63
+60            android:exported="true" />
+60-->[androidx.compose.ui:ui-test-manifest:1.5.0] /Users/araghavan/.gradle/caches/8.12/transforms/d407ebddaba21bf81989abf1a7cf83cf/transformed/jetified-ui-test-manifest-1.5.0/AndroidManifest.xml:25:13-36
+61        <activity
+61-->[androidx.compose.ui:ui-tooling-android:1.5.0] /Users/araghavan/.gradle/caches/8.12/transforms/89aba71f8548899424a6eccda5b675ab/transformed/jetified-ui-tooling-release/AndroidManifest.xml:23:9-25:39
+62            android:name="androidx.compose.ui.tooling.PreviewActivity"
+62-->[androidx.compose.ui:ui-tooling-android:1.5.0] /Users/araghavan/.gradle/caches/8.12/transforms/89aba71f8548899424a6eccda5b675ab/transformed/jetified-ui-tooling-release/AndroidManifest.xml:24:13-71
+63            android:exported="true" />
+63-->[androidx.compose.ui:ui-tooling-android:1.5.0] /Users/araghavan/.gradle/caches/8.12/transforms/89aba71f8548899424a6eccda5b675ab/transformed/jetified-ui-tooling-release/AndroidManifest.xml:25:13-36
+64
+65        <provider
+65-->[androidx.emoji2:emoji2:1.4.0] /Users/araghavan/.gradle/caches/8.12/transforms/190a5571585ff740a1626cfe7c2130f3/transformed/jetified-emoji2-1.4.0/AndroidManifest.xml:24:9-32:20
+66            android:name="androidx.startup.InitializationProvider"
+66-->[androidx.emoji2:emoji2:1.4.0] /Users/araghavan/.gradle/caches/8.12/transforms/190a5571585ff740a1626cfe7c2130f3/transformed/jetified-emoji2-1.4.0/AndroidManifest.xml:25:13-67
+67            android:authorities="com.example.calmcompanion.androidx-startup"
+67-->[androidx.emoji2:emoji2:1.4.0] /Users/araghavan/.gradle/caches/8.12/transforms/190a5571585ff740a1626cfe7c2130f3/transformed/jetified-emoji2-1.4.0/AndroidManifest.xml:26:13-68
+68            android:exported="false" >
+68-->[androidx.emoji2:emoji2:1.4.0] /Users/araghavan/.gradle/caches/8.12/transforms/190a5571585ff740a1626cfe7c2130f3/transformed/jetified-emoji2-1.4.0/AndroidManifest.xml:27:13-37
+69            <meta-data
+69-->[androidx.emoji2:emoji2:1.4.0] /Users/araghavan/.gradle/caches/8.12/transforms/190a5571585ff740a1626cfe7c2130f3/transformed/jetified-emoji2-1.4.0/AndroidManifest.xml:29:13-31:52
+70                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+70-->[androidx.emoji2:emoji2:1.4.0] /Users/araghavan/.gradle/caches/8.12/transforms/190a5571585ff740a1626cfe7c2130f3/transformed/jetified-emoji2-1.4.0/AndroidManifest.xml:30:17-75
+71                android:value="androidx.startup" />
+71-->[androidx.emoji2:emoji2:1.4.0] /Users/araghavan/.gradle/caches/8.12/transforms/190a5571585ff740a1626cfe7c2130f3/transformed/jetified-emoji2-1.4.0/AndroidManifest.xml:31:17-49
+72            <meta-data
+72-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/araghavan/.gradle/caches/8.12/transforms/5c0fe83afc75d1c8a9709c5cae78c080/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:29:13-31:52
+73                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+73-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/araghavan/.gradle/caches/8.12/transforms/5c0fe83afc75d1c8a9709c5cae78c080/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:30:17-78
+74                android:value="androidx.startup" />
+74-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/araghavan/.gradle/caches/8.12/transforms/5c0fe83afc75d1c8a9709c5cae78c080/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:31:17-49
+75            <meta-data
+75-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:29:13-31:52
+76                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+76-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:30:17-85
+77                android:value="androidx.startup" />
+77-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:31:17-49
+78        </provider>
+79
+80        <receiver
+80-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:34:9-52:20
+81            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+81-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:35:13-76
+82            android:directBootAware="false"
+82-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:36:13-44
+83            android:enabled="true"
+83-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:37:13-35
+84            android:exported="true"
+84-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:38:13-36
+85            android:permission="android.permission.DUMP" >
+85-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:39:13-57
 86            <intent-filter>
-86-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:49:13-51:29
-87                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
-87-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:50:17-95
-87-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:50:25-92
+86-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:40:13-42:29
+87                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+87-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:41:17-91
+87-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:41:25-88
 88            </intent-filter>
-89        </receiver>
-90    </application>
-91
-92</manifest>
+89            <intent-filter>
+89-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:43:13-45:29
+90                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+90-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:44:17-85
+90-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:44:25-82
+91            </intent-filter>
+92            <intent-filter>
+92-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:46:13-48:29
+93                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+93-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:47:17-88
+93-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:47:25-85
+94            </intent-filter>
+95            <intent-filter>
+95-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:49:13-51:29
+96                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+96-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:50:17-95
+96-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/araghavan/.gradle/caches/8.12/transforms/3894a78c569fd333fa7700615d759238/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:50:25-92
+97            </intent-filter>
+98        </receiver>
+99    </application>
+100
+101</manifest>
