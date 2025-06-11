@@ -1,0 +1,113 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/flutter_assets
+**/ios/Flutter/flutter_export_environment.sh
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# Large model files - DO NOT COMMIT TO GIT
+assets/models/*.gguf
+assets/models/*.bin
+assets/models/*.safetensors
+assets/models/*.pt
+assets/models/*.pth
+assets/models/*.onnx
+assets/models/.cache/
+assets/models/cache/
+
+# Generated TensorFlow Lite models (regenerate with script)
+assets/models/*.tflite
+
+# Keep configuration files but not large models
+!assets/models/*.json
+!assets/models/*.yaml
+!assets/models/*.txt
+
+# APK files (can be regenerated)
+*.apk
+*.aab
+
+# iOS build artifacts
+**/ios/build/
+
+# Web build artifacts
+**/web/build/
+
+# macOS build artifacts
+**/macos/build/
+
+# Windows build artifacts
+**/windows/build/
+
+# Linux build artifacts
+**/linux/build/
+
+# Python related (for model setup scripts)
+scripts/__pycache__/
+scripts/*.pyc
+scripts/.cache/
+scripts/venv/
+scripts/env/
+
+# Model conversion temporary files
+scripts/temp/
+scripts/output/
+
+# Logs
+logs/
+*.log
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

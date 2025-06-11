@@ -1,0 +1,10 @@
+{
+  "name": "TinyLlama 1.1B Chat",
+  "version": "v1.0",
+  "quantization": "Q4_K_M",
+  "size_mb": 700,
+  "architecture": "llama",
+  "context_length": 2048,
+  "vocab_size": 32000,
+  "created_with": "AIRA Model Setup Script"
+}
