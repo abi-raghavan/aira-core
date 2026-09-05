@@ -153,6 +153,8 @@ fun AiraApp(viewModel: MainViewModel = viewModel()) {
                 onCalmTouch = viewModel::triggerHelp,
                 onPause = viewModel::stopVoiceAssistant,
                 onLoadDemoSetup = viewModel::loadDemoSetup,
+                onSimulateCall = viewModel::simulateCaregiverCall,
+                onSimulateMessage = viewModel::simulateCaregiverMessage,
                 onDemo = viewModel::runCriticalDemo,
                 onTestAlert = viewModel::sendTestAlert,
                 onAcknowledge = viewModel::acknowledgeLatestAlert,
@@ -163,7 +165,7 @@ fun AiraApp(viewModel: MainViewModel = viewModel()) {
                 initial = settings,
                 onSave = {
                     viewModel.saveSettings(it)
-                    if (it.automaticSms) {
+                    if (it.automaticSms && !BuildConfig.DEMO_MODE) {
                         permissionsLauncher.launch(arrayOf(Manifest.permission.SEND_SMS))
                     }
                     screen = Screen.READY
@@ -188,6 +190,8 @@ private fun ReadyScreen(
     onCalmTouch: () -> Unit,
     onPause: () -> Unit,
     onLoadDemoSetup: () -> Unit,
+    onSimulateCall: () -> Unit,
+    onSimulateMessage: () -> Unit,
     onDemo: () -> Unit,
     onTestAlert: () -> Unit,
     onAcknowledge: () -> Unit,
@@ -228,7 +232,7 @@ private fun ReadyScreen(
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                         Text(
-                            "This build walks the full path: spoken guidance, critical detection, and a caregiver alert. Load the demo caregiver first if setup is empty.",
+                            "This build walks the full path: spoken guidance, critical detection, and a caregiver alert. Nothing leaves the phone, so no SMS, call, or server request is ever made.",
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                         Button(
@@ -255,9 +259,13 @@ private fun ReadyScreen(
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 OutlinedButton(
                     onClick = {
-                        context.startActivity(
-                            Intent(Intent.ACTION_DIAL, "tel:${settings.caregiverPhone}".toUri())
-                        )
+                        if (BuildConfig.DEMO_MODE) {
+                            onSimulateCall()
+                        } else {
+                            context.startActivity(
+                                Intent(Intent.ACTION_DIAL, "tel:${settings.caregiverPhone}".toUri())
+                            )
+                        }
                     },
                     enabled = settings.caregiverPhone.isNotBlank(),
                     modifier = Modifier.weight(1f).sizeIn(minHeight = 64.dp)
@@ -272,13 +280,17 @@ private fun ReadyScreen(
             item {
                 OutlinedButton(
                     onClick = {
-                        context.startActivity(
-                            Intent(Intent.ACTION_SENDTO, "smsto:${settings.caregiverPhone}".toUri())
-                                .putExtra(
-                                    "sms_body",
-                                    "AIRA support request: please contact ${settings.patientName.ifBlank { "me" }}."
-                                )
-                        )
+                        if (BuildConfig.DEMO_MODE) {
+                            onSimulateMessage()
+                        } else {
+                            context.startActivity(
+                                Intent(Intent.ACTION_SENDTO, "smsto:${settings.caregiverPhone}".toUri())
+                                    .putExtra(
+                                        "sms_body",
+                                        "AIRA support request: please contact ${settings.patientName.ifBlank { "me" }}."
+                                    )
+                            )
+                        }
                     },
                     modifier = Modifier.fillMaxWidth().height(56.dp)
                 ) { Text("Message caregiver") }
@@ -422,6 +434,9 @@ private fun AlertCard(alert: AlertEvent, onAcknowledge: () -> Unit) {
         Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("Caregiver alert: ${alert.status.lowercase()}", fontWeight = FontWeight.Bold)
             Text("Severity: ${alert.severity.lowercase()}. Attempts: ${alert.attemptCount}.")
+            if (BuildConfig.DEMO_MODE) {
+                Text("Simulated delivery. No message or call left this device.")
+            }
             if (BuildConfig.DEMO_MODE && alert.status == AlertStatus.SENT.name) {
                 Button(onClick = onAcknowledge, modifier = Modifier.fillMaxWidth()) {
                     Text("Demo caregiver: acknowledge")
@@ -509,12 +524,14 @@ private fun SetupScreen(
                 label = "We consent to caregiver alerts containing severity, but no raw audio or transcript."
             )
         }
-        item {
-            LabeledCheckbox(
-                checked = automaticSms,
-                onCheckedChange = { automaticSms = it },
-                label = "Allow direct SMS fallback when internet is unavailable. Carrier charges may apply."
-            )
+        if (!BuildConfig.DEMO_MODE) {
+            item {
+                LabeledCheckbox(
+                    checked = automaticSms,
+                    onCheckedChange = { automaticSms = it },
+                    label = "Allow direct SMS fallback when internet is unavailable. Carrier charges may apply."
+                )
+            }
         }
         item {
             Button(

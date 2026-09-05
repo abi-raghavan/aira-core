@@ -212,6 +212,22 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         _assistantState.value = AssistantState.IDLE
     }
 
+    /**
+     * Demo builds must never contact a real caregiver. This reports the delivery the
+     * patient would see without opening the messaging app or sending anything.
+     */
+    fun simulateCaregiverMessage() {
+        val name = _settings.value.caregiverName.ifBlank { "your caregiver" }
+        addMessage("Message sent to $name. No real message left this device.", false)
+        _currentStatus.value = "Message sent to $name (simulated for this demo)."
+    }
+
+    fun simulateCaregiverCall() {
+        val name = _settings.value.caregiverName.ifBlank { "your caregiver" }
+        addMessage("Calling $name now. No real call is placed in this demo.", false)
+        _currentStatus.value = "Calling $name (simulated for this demo)."
+    }
+
     fun loadDemoSetup() {
         saveSettings(
             CaregiverSettings(

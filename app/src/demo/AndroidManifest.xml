@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The demo build never sends real SMS: alerts are simulated, and caregiver contact
+  goes through the dialer and messaging apps via intents, which need no permission.
+  Dropping SEND_SMS removes the record-audio-plus-send-SMS pattern that makes
+  Play Protect block the sideloaded APK.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission
+        android:name="android.permission.SEND_SMS"
+        tools:node="remove" />
+
+</manifest>
