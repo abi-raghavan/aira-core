@@ -24,8 +24,8 @@ android {
         applicationId = "com.example.calmcompanion"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2
-        versionName = "0.2.0-pilot"
+        versionCode = 3
+        versionName = "0.3.0-pilot"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         buildConfigField("String", "CAREGIVER_ENDPOINT", "\"$caregiverEndpoint\"")
@@ -55,6 +55,13 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.findByName("release")
+        }
+        create("demo") {
+            initWith(getByName("release"))
+            matchingFallbacks += listOf("release")
+            versionNameSuffix = "-demo"
+            buildConfigField("boolean", "DEMO_MODE", "true")
             signingConfig = signingConfigs.findByName("release")
         }
     }

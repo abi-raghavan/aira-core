@@ -212,6 +212,21 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         _assistantState.value = AssistantState.IDLE
     }
 
+    fun loadDemoSetup() {
+        saveSettings(
+            CaregiverSettings(
+                patientName = "Sam",
+                caregiverName = "Abi",
+                caregiverPhone = "+15555550100",
+                customTriggers = setOf("I need my person"),
+                customCriticalTriggers = setOf("call Abi"),
+                consentToAlert = true,
+                automaticSms = false
+            )
+        )
+        _currentStatus.value = "Demo caregiver loaded. Tap Simulate critical phrase for the full flow."
+    }
+
     fun saveSettings(settings: CaregiverSettings) {
         settingsRepository.save(settings)
         _settings.value = settingsRepository.load()

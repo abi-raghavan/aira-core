@@ -152,6 +152,7 @@ fun AiraApp(viewModel: MainViewModel = viewModel()) {
                 },
                 onCalmTouch = viewModel::triggerHelp,
                 onPause = viewModel::stopVoiceAssistant,
+                onLoadDemoSetup = viewModel::loadDemoSetup,
                 onDemo = viewModel::runCriticalDemo,
                 onTestAlert = viewModel::sendTestAlert,
                 onAcknowledge = viewModel::acknowledgeLatestAlert,
@@ -186,6 +187,7 @@ private fun ReadyScreen(
     onRequestPermissions: () -> Unit,
     onCalmTouch: () -> Unit,
     onPause: () -> Unit,
+    onLoadDemoSetup: () -> Unit,
     onDemo: () -> Unit,
     onTestAlert: () -> Unit,
     onAcknowledge: () -> Unit,
@@ -212,6 +214,34 @@ private fun ReadyScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.fillMaxWidth()
             )
+        }
+        if (BuildConfig.DEMO_MODE) {
+            item {
+                Card(
+                    Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+                ) {
+                    Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Text(
+                            "Client demo",
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                        Text(
+                            "This build walks the full path: spoken guidance, critical detection, and a caregiver alert. Load the demo caregiver first if setup is empty.",
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                        Button(
+                            onClick = onLoadDemoSetup,
+                            modifier = Modifier.fillMaxWidth().height(56.dp)
+                        ) { Text("Load demo caregiver") }
+                        Button(
+                            onClick = onDemo,
+                            modifier = Modifier.fillMaxWidth().height(64.dp)
+                        ) { Text("Simulate critical phrase") }
+                    }
+                }
+            }
         }
         if (!hasPermission) {
             item {
@@ -294,14 +324,6 @@ private fun ReadyScreen(
                     enabled = running,
                     modifier = Modifier.fillMaxWidth()
                 ) { Text(if (running) "Pause listening" else "Listening paused") }
-            }
-        }
-        if (BuildConfig.DEMO_MODE) {
-            item {
-                OutlinedButton(
-                    onClick = onDemo,
-                    modifier = Modifier.fillMaxWidth()
-                ) { Text("Demo: simulate critical phrase") }
             }
         }
     }
