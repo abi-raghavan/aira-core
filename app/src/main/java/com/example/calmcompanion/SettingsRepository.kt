@@ -10,6 +10,7 @@ data class CaregiverSettings(
     val caregiverPhone: String = "",
     val pairingToken: String = "",
     val customTriggers: Set<String> = setOf("I need my person"),
+    val customCriticalTriggers: Set<String> = emptySet(),
     val consentToAlert: Boolean = false,
     val automaticSms: Boolean = false
 ) {
@@ -43,6 +44,9 @@ class SettingsRepository private constructor(context: Context) {
         customTriggers = preferences.getStringSet(KEY_TRIGGERS, setOf("I need my person"))
             ?.toSet()
             .orEmpty(),
+        customCriticalTriggers = preferences.getStringSet(KEY_CRITICAL_TRIGGERS, emptySet())
+            ?.toSet()
+            .orEmpty(),
         consentToAlert = preferences.getBoolean(KEY_CONSENT, false),
         automaticSms = preferences.getBoolean(KEY_AUTO_SMS, false)
     )
@@ -54,6 +58,10 @@ class SettingsRepository private constructor(context: Context) {
             .putString(KEY_PHONE, settings.caregiverPhone.filter { it.isDigit() || it == '+' })
             .putString(KEY_PAIRING_TOKEN, settings.pairingToken.trim())
             .putStringSet(KEY_TRIGGERS, settings.customTriggers.map(String::trim).filter(String::isNotBlank).toSet())
+            .putStringSet(
+                KEY_CRITICAL_TRIGGERS,
+                settings.customCriticalTriggers.map(String::trim).filter(String::isNotBlank).toSet()
+            )
             .putBoolean(KEY_CONSENT, settings.consentToAlert)
             .putBoolean(KEY_AUTO_SMS, settings.automaticSms)
             .apply()
@@ -73,6 +81,7 @@ class SettingsRepository private constructor(context: Context) {
         const val KEY_PHONE = "phone"
         const val KEY_PAIRING_TOKEN = "pairing_token"
         const val KEY_TRIGGERS = "triggers"
+        const val KEY_CRITICAL_TRIGGERS = "critical_triggers"
         const val KEY_CONSENT = "consent"
         const val KEY_AUTO_SMS = "auto_sms"
     }

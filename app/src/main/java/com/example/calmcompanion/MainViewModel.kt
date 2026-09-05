@@ -46,7 +46,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val isServiceRunning: StateFlow<Boolean> = _isServiceRunning.asStateFlow()
     private val _conversationHistory = MutableStateFlow<List<ConversationMessage>>(emptyList())
     val conversationHistory: StateFlow<List<ConversationMessage>> = _conversationHistory.asStateFlow()
-    private val _currentStatus = MutableStateFlow("Ready. Press Help whenever you need support.")
+    private val _currentStatus = MutableStateFlow("Starting up. Speak or touch the circle any time.")
     val currentStatus: StateFlow<String> = _currentStatus.asStateFlow()
     private val _hasPermissions = MutableStateFlow(false)
     val hasPermissions: StateFlow<Boolean> = _hasPermissions.asStateFlow()
@@ -78,8 +78,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             )
             when (pendingAction) {
                 PendingAction.LISTEN -> voiceService?.startListening()
-                PendingAction.HELP -> voiceService?.triggerHelp()
-                PendingAction.CRITICAL_DEMO -> voiceService?.simulateCriticalDemo()
+                PendingAction.HELP -> voiceService?.triggerHelp(_hasPermissions.value)
+                PendingAction.CRITICAL_DEMO -> voiceService?.simulateCriticalDemo(_hasPermissions.value)
                 null -> Unit
             }
             pendingAction = null
@@ -91,7 +91,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             bindRequested = false
             _isServiceRunning.value = false
             _assistantState.value = AssistantState.ERROR
-            _currentStatus.value = "Support service disconnected. Press Help to restart."
+            _currentStatus.value = "Listening stopped. Touch the circle to restart support."
         }
     }
 
@@ -156,7 +156,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private fun connectAndRun(action: PendingAction) {
         if (!refreshAndReturnPermission()) {
             _currentStatus.value =
-                "Microphone and notification access are needed for listening. Help still gives guidance."
+                "Listening is off until microphone access is allowed. Touch still gives calming support."
             if (action != PendingAction.LISTEN) {
                 val response = ResponseEngine().responseFor(
                     DetectionResult(DistressSeverity.HIGH, listOf("help me"), "help me"),
@@ -180,8 +180,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         if (isServiceBound) {
             when (action) {
                 PendingAction.LISTEN -> voiceService?.startListening()
-                PendingAction.HELP -> voiceService?.triggerHelp()
-                PendingAction.CRITICAL_DEMO -> voiceService?.simulateCriticalDemo()
+                PendingAction.HELP -> voiceService?.triggerHelp(_hasPermissions.value)
+                PendingAction.CRITICAL_DEMO -> voiceService?.simulateCriticalDemo(_hasPermissions.value)
             }
             pendingAction = null
         } else if (!bindRequested) {
@@ -195,7 +195,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun stopVoiceAssistant() {
         stopService()
-        _currentStatus.value = "Paused. Press Help whenever you need support."
+        _currentStatus.value = "Listening paused. Touch the circle for support."
     }
 
     fun stopService() {
@@ -252,11 +252,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun statusFor(state: AssistantState): String = when (state) {
-        AssistantState.IDLE -> "Ready. Press Help whenever you need support."
-        AssistantState.LISTENING -> "Listening on this device…"
-        AssistantState.PROCESSING -> "Choosing a safe response…"
-        AssistantState.SPEAKING -> "Breathe slowly with AIRA…"
-        AssistantState.ERROR -> "Voice is unavailable. Use the Help or emergency button."
+        AssistantState.IDLE -> "Resting. Speak or touch the circle any time."
+        AssistantState.LISTENING -> "Listening on this device."
+        AssistantState.PROCESSING -> "Choosing a safe response."
+        AssistantState.SPEAKING -> "Breathe slowly with AIRA."
+        AssistantState.ERROR -> "Voice is unavailable. Touch the circle or call your caregiver."
     }
 
     override fun onCleared() {

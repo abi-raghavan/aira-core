@@ -18,18 +18,21 @@ class DistressDetector {
     fun detect(
         text: String,
         customTriggers: Set<String> = emptySet(),
+        customCriticalTriggers: Set<String> = emptySet(),
         repeatedWithinWindow: Boolean = false
     ): DetectionResult {
         val normalized = normalize(text)
         val custom = customTriggers.map(::normalize).filter(String::isNotBlank).toSet()
+        val customCritical = customCriticalTriggers.map(::normalize).filter(String::isNotBlank).toSet()
         val critical = matches(normalized, criticalPhrases)
+        val customCriticalMatches = matches(normalized, customCritical)
         val high = matches(normalized, highPhrases)
         val low = matches(normalized, lowPhrases)
         val customMatches = matches(normalized, custom)
-        val matches = (critical + high + low + customMatches).distinct()
+        val matches = (critical + customCriticalMatches + high + low + customMatches).distinct()
 
         val severity = when {
-            critical.isNotEmpty() -> DistressSeverity.CRITICAL
+            critical.isNotEmpty() || customCriticalMatches.isNotEmpty() -> DistressSeverity.CRITICAL
             high.isNotEmpty() || customMatches.isNotEmpty() || (low.isNotEmpty() && repeatedWithinWindow) ->
                 DistressSeverity.HIGH
             low.isNotEmpty() -> DistressSeverity.LOW

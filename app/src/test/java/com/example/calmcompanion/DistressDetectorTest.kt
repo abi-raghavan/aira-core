@@ -27,6 +27,17 @@ class DistressDetectorTest {
     }
 
     @Test
+    fun caregiverCanConfigureCriticalPhrase() {
+        val result = detector.detect(
+            text = "Please call Abi now",
+            customCriticalTriggers = setOf("call abi")
+        )
+
+        assertEquals(DistressSeverity.CRITICAL, result.severity)
+        assertEquals(listOf("call abi"), result.matchedPhrases)
+    }
+
+    @Test
     fun repeatedLowDistressEscalates() {
         val first = detector.detect("I feel anxious")
         val repeated = detector.detect("Still anxious", repeatedWithinWindow = true)

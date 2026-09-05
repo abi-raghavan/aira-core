@@ -8,11 +8,21 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,9 +30,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
@@ -33,12 +45,16 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.contentDescription
@@ -46,12 +62,11 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.core.net.toUri
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.calmcompanion.ui.theme.CalmCompanionTheme
 import kotlinx.coroutines.flow.StateFlow
 
@@ -59,7 +74,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            CalmCompanionTheme(dynamicColor = false) {
+            CalmCompanionTheme {
                 Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
                     AiraApp()
                 }
@@ -85,11 +100,26 @@ fun AiraApp(viewModel: MainViewModel = viewModel()) {
         ActivityResultContracts.RequestMultiplePermissions()
     ) { viewModel.refreshPermissions() }
 
+    // Listening is the resting state: the patient should never have to start it.
+    LaunchedEffect(hasPermission, screen) {
+        if (hasPermission && screen == Screen.READY) viewModel.startVoiceAssistant()
+    }
+
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 12.dp)) {
-                Text("AIRA", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Black)
-                Text("Calm support. Human connection.", style = MaterialTheme.typography.bodyLarge)
+                Text(
+                    "AIRA",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Black,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    "Always here. Just speak, or touch the circle.",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         },
         bottomBar = {
@@ -120,8 +150,7 @@ fun AiraApp(viewModel: MainViewModel = viewModel()) {
                     }
                     permissionsLauncher.launch(permissions.toTypedArray())
                 },
-                onHelp = viewModel::triggerHelp,
-                onStart = viewModel::startVoiceAssistant,
+                onCalmTouch = viewModel::triggerHelp,
                 onPause = viewModel::stopVoiceAssistant,
                 onDemo = viewModel::runCriticalDemo,
                 onTestAlert = viewModel::sendTestAlert,
@@ -155,8 +184,7 @@ private fun ReadyScreen(
     settings: CaregiverSettings,
     latestAlert: AlertEvent?,
     onRequestPermissions: () -> Unit,
-    onHelp: () -> Unit,
-    onStart: () -> Unit,
+    onCalmTouch: () -> Unit,
     onPause: () -> Unit,
     onDemo: () -> Unit,
     onTestAlert: () -> Unit,
@@ -164,58 +192,25 @@ private fun ReadyScreen(
     onClear: () -> Unit
 ) {
     val context = LocalContext.current
-    val haptics = LocalHapticFeedback.current
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(20.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         item {
-            StatusCard(assistantState, status)
-        }
-        if (!settings.isConfigured) {
-            item {
-                Card(Modifier.fillMaxWidth()) {
-                    Text(
-                        "Caregiver alerts are off until setup and consent are completed. Calming guidance still works.",
-                        modifier = Modifier.padding(16.dp),
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
-        } else if (!settings.canAutomaticallyAlert) {
-            item {
-                Card(Modifier.fillMaxWidth()) {
-                    Text(
-                        "Automatic alerts are not configured. Caregiver call and message buttons remain available.",
-                        modifier = Modifier.padding(16.dp),
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
-        }
-        item {
-            Button(
-                onClick = {
-                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                    onHelp()
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(128.dp)
-                    .semantics { contentDescription = "Help me now. Starts calming guidance." },
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-            ) {
-                Text("HELP ME", style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Black)
-            }
+            CalmSurface(
+                assistantState = assistantState,
+                hasPermission = hasPermission,
+                onTouch = onCalmTouch
+            )
         }
         item {
             Text(
-                "Put both feet down. Breathe in slowly for four. Breathe out slowly for four.",
+                status,
                 style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.semantics {
-                    contentDescription = "Breathing guide. In for four. Out for four."
-                }
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.fillMaxWidth()
             )
         }
         if (!hasPermission) {
@@ -223,14 +218,7 @@ private fun ReadyScreen(
                 Button(
                     onClick = onRequestPermissions,
                     modifier = Modifier.fillMaxWidth().height(64.dp)
-                ) { Text("Enable private voice support") }
-            }
-        } else {
-            item {
-                OutlinedButton(
-                    onClick = if (running) onPause else onStart,
-                    modifier = Modifier.fillMaxWidth().height(64.dp)
-                ) { Text(if (running) "Pause listening" else "Start listening") }
+                ) { Text("Turn on private listening") }
             }
         }
         item {
@@ -266,10 +254,17 @@ private fun ReadyScreen(
                 ) { Text("Message caregiver") }
             }
         }
-        latestAlert?.let { alert ->
+        if (!settings.isConfigured) {
             item {
-                AlertCard(alert, onAcknowledge)
+                NoticeCard("Caregiver alerts are off until setup and consent are complete. Calming support still works.")
             }
+        } else if (!settings.canAutomaticallyAlert) {
+            item {
+                NoticeCard("Automatic alerts are not configured. Caregiver call and message stay available.")
+            }
+        }
+        latestAlert?.let { alert ->
+            item { AlertCard(alert, onAcknowledge) }
         }
         if (settings.isConfigured) {
             item {
@@ -282,11 +277,24 @@ private fun ReadyScreen(
         if (messages.isNotEmpty()) {
             item {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    Text("Recent session", style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
+                    Text(
+                        "Recent session",
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.weight(1f)
+                    )
                     TextButton(onClick = onClear) { Text("Clear") }
                 }
             }
             items(messages.takeLast(6)) { MessageBubble(it) }
+        }
+        if (hasPermission) {
+            item {
+                TextButton(
+                    onClick = onPause,
+                    enabled = running,
+                    modifier = Modifier.fillMaxWidth()
+                ) { Text(if (running) "Pause listening" else "Listening paused") }
+            }
         }
         if (BuildConfig.DEMO_MODE) {
             item {
@@ -299,30 +307,96 @@ private fun ReadyScreen(
     }
 }
 
+/**
+ * The resting surface of the app. It shows that AIRA is listening and accepts an
+ * immediate touch anywhere inside the circle, so no reading or aiming is required.
+ */
 @Composable
-private fun StatusCard(state: AssistantState, status: String) {
-    Card(Modifier.fillMaxWidth()) {
-        Column(Modifier.padding(18.dp)) {
+private fun CalmSurface(
+    assistantState: AssistantState,
+    hasPermission: Boolean,
+    onTouch: () -> Unit
+) {
+    val haptics = LocalHapticFeedback.current
+    val breathing = rememberInfiniteTransition(label = "breath")
+    val pulse by breathing.animateFloat(
+        initialValue = 0.94f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 4000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "pulse"
+    )
+
+    val headline = when {
+        !hasPermission -> "Touch to be guided"
+        assistantState == AssistantState.SPEAKING -> "Breathe with me"
+        assistantState == AssistantState.PROCESSING -> "I heard you"
+        assistantState == AssistantState.ERROR -> "Touch for support"
+        else -> "I'm listening"
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(1f)
+            .scale(pulse)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.primaryContainer)
+            .clickable {
+                haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                onTouch()
+            }
+            .semantics {
+                contentDescription = "AIRA is listening. Touch anywhere for calming support."
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
             Text(
-                when (state) {
-                    AssistantState.LISTENING -> "LISTENING"
-                    AssistantState.PROCESSING -> "RESPONDING"
-                    AssistantState.SPEAKING -> "CALMING GUIDANCE"
-                    AssistantState.ERROR -> "NEEDS ATTENTION"
-                    AssistantState.IDLE -> "READY"
-                },
-                style = MaterialTheme.typography.labelLarge,
-                fontWeight = FontWeight.Bold
+                headline,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Black,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                textAlign = TextAlign.Center
             )
-            Spacer(Modifier.height(6.dp))
-            Text(status, style = MaterialTheme.typography.bodyLarge)
+            Text(
+                "In for four. Out for four.",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                textAlign = TextAlign.Center
+            )
         }
     }
 }
 
 @Composable
+private fun NoticeCard(text: String) {
+    Card(
+        Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+    ) {
+        Text(
+            text,
+            modifier = Modifier.padding(16.dp),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+@Composable
 private fun AlertCard(alert: AlertEvent, onAcknowledge: () -> Unit) {
-    Card(Modifier.fillMaxWidth().semantics { contentDescription = "Caregiver alert ${alert.status.lowercase()}" }) {
+    Card(
+        Modifier
+            .fillMaxWidth()
+            .semantics { contentDescription = "Caregiver alert ${alert.status.lowercase()}" },
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+    ) {
         Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("Caregiver alert: ${alert.status.lowercase()}", fontWeight = FontWeight.Bold)
             Text("Severity: ${alert.severity.lowercase()}. Attempts: ${alert.attemptCount}.")
@@ -346,6 +420,9 @@ private fun SetupScreen(
     var phone by remember(initial) { mutableStateOf(initial.caregiverPhone) }
     var pairingToken by remember(initial) { mutableStateOf(initial.pairingToken) }
     var triggers by remember(initial) { mutableStateOf(initial.customTriggers.joinToString(", ")) }
+    var criticalTriggers by remember(initial) {
+        mutableStateOf(initial.customCriticalTriggers.joinToString(", "))
+    }
     var consent by remember(initial) { mutableStateOf(initial.consentToAlert) }
     var automaticSms by remember(initial) { mutableStateOf(initial.automaticSms) }
 
@@ -355,7 +432,11 @@ private fun SetupScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         item {
-            Text("Caregiver and trigger setup", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+            Text(
+                "Caregiver and trigger setup",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold
+            )
             Text("Set this up together with the patient. Test alerts before relying on AIRA.")
         }
         item { OutlinedTextField(patient, { patient = it }, label = { Text("Patient preferred name") }, modifier = Modifier.fillMaxWidth()) }
@@ -373,8 +454,19 @@ private fun SetupScreen(
             OutlinedTextField(
                 triggers,
                 { triggers = it },
-                label = { Text("Custom trigger phrases, separated by commas") },
-                supportingText = { Text("Examples: I need my person, red balloon") },
+                label = { Text("Support phrases, separated by commas") },
+                supportingText = { Text("These provide calming guidance and send a high-priority alert.") },
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+        item {
+            OutlinedTextField(
+                criticalTriggers,
+                { criticalTriggers = it },
+                label = { Text("Critical phrases, separated by commas") },
+                supportingText = {
+                    Text("Examples: call Abi, blue umbrella. Use only for phrases that mean urgent help.")
+                },
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -412,6 +504,11 @@ private fun SetupScreen(
                             caregiverPhone = phone,
                             pairingToken = pairingToken,
                             customTriggers = triggers.split(',').map(String::trim).filter(String::isNotBlank).toSet(),
+                            customCriticalTriggers = criticalTriggers
+                                .split(',')
+                                .map(String::trim)
+                                .filter(String::isNotBlank)
+                                .toSet(),
                             consentToAlert = consent,
                             automaticSms = automaticSms
                         )
@@ -442,11 +539,17 @@ private fun SafetyScreen(modifier: Modifier) {
         contentPadding = PaddingValues(20.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
-        item { Text("Safety and privacy", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold) }
+        item {
+            Text(
+                "Safety and privacy",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold
+            )
+        }
         item { Text("AIRA offers supportive calming guidance. It does not diagnose, monitor vital signs, or replace emergency services.") }
         item { Divider() }
         item { Text("Speech is requested for on-device processing. Android may fall back depending on the speech service installed on this device. Raw audio is not saved by AIRA.") }
-        item { Text("Caregiver settings are encrypted on this device. Alert records store only severity, delivery state, and timestamps—not transcripts.") }
+        item { Text("Caregiver settings are encrypted on this device. Alert records store only severity, delivery state, and timestamps, not transcripts.") }
         item { Text("Direct SMS requires separate consent and permission. Google Play may restrict automated SMS; pilot distribution must verify eligibility.") }
         item { Text("If anyone is in immediate danger, use the Emergency dialer and contact local emergency services.") }
     }
@@ -454,9 +557,17 @@ private fun SafetyScreen(modifier: Modifier) {
 
 @Composable
 private fun MessageBubble(message: ConversationMessage) {
-    Card(Modifier.fillMaxWidth()) {
+    Card(
+        Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+    ) {
         Column(Modifier.padding(14.dp)) {
-            Text(if (message.isFromUser) "Heard" else "AIRA", fontWeight = FontWeight.Bold)
+            Text(
+                if (message.isFromUser) "Heard" else "AIRA",
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Spacer(Modifier.height(2.dp))
             Text(message.text, style = MaterialTheme.typography.bodyLarge)
         }
     }

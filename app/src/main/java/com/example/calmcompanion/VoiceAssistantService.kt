@@ -138,16 +138,18 @@ class VoiceAssistantService : LifecycleService() {
     fun pauseListening() = stopListening()
     fun resumeListening() = startListening()
 
-    fun triggerHelp() {
-        val resumeListening = listeningActive
+    /**
+     * Immediate support from a touch. [keepListening] is true when the microphone is
+     * available, so AIRA returns to its resting listening state after speaking.
+     */
+    fun triggerHelp(keepListening: Boolean = listeningActive) {
         requestAudioFocus()
-        processText("help me", resumeListening)
+        processText("help me", keepListening)
     }
 
-    fun simulateCriticalDemo() {
-        val resumeListening = listeningActive
+    fun simulateCriticalDemo(keepListening: Boolean = listeningActive) {
         requestAudioFocus()
-        processText("I cannot breathe medical emergency", resumeListening)
+        processText("I cannot breathe medical emergency", keepListening)
     }
 
     private fun beginRecognition() {
@@ -187,6 +189,7 @@ class VoiceAssistantService : LifecycleService() {
         val result = detector.detect(
             text = text,
             customTriggers = settings.customTriggers,
+            customCriticalTriggers = settings.customCriticalTriggers,
             repeatedWithinWindow = now - lastDistressAt < REPEAT_WINDOW_MS
         )
         if (result.severity != DistressSeverity.NONE) lastDistressAt = now
