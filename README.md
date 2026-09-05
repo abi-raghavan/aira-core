@@ -1,41 +1,74 @@
 # AIRA
 
-**AIRA** is a panic companion for people living with acquired brain injury.
+AIRA is a calm companion on the phone for someone living with acquired brain injury.
 
-When someone is overwhelmed, they tap **Help** (or say a phrase they chose). The phone speaks a calm script and can alert a named carer. It works **offline**. It does **not** chat, diagnose, or replace 999.
+When they are overwhelmed, they do not need to hunt for a button. The phone listens. They can speak a phrase they chose with their carer, or touch the large circle. AIRA answers with a short, fixed calming script. If they have agreed to it, a carer is told that help may be needed.
 
-That is the point. Unconstrained generative AI can invent advice, need a network, and send speech to the cloud. AIRA uses **on-device speech + reviewable rules**, so doctors and carers can see exactly why it responded.
+It is meant to work when the person can barely move, and when there is no internet.
 
-## Design
+AIRA is **not** a chatbot, a doctor, or an emergency service.
 
-```
-Patient  →  Help / custom phrase  →  calm spoken script
-                                 →  carer alert (consent only)
-```
+## Why it is built this way
 
-| Layer | What it is |
+Generative AI can invent advice, need a network, and send speech to the cloud. That is a poor fit in a panic.
+
+AIRA keeps the path small and reviewable:
+
+1. The microphone turns speech into words on the phone.
+2. Those words are checked against phrases the carer set up (for example `call Abi`).
+3. A matching phrase picks a severity and a fixed spoken reply. The reply is the same every time.
+4. If alerts are allowed, the carer is notified. In the **demo** build, that notification is only shown on screen. Nothing is actually sent.
+
+Audio is not saved. Transcripts are not uploaded.
+
+## Screens
+
+| Screen | Who it is for |
 |---|---|
-| UI | One large Help control, carer setup, safety copy |
-| Voice | On-device speech-to-text and text-to-speech |
-| Rules | Keyword / custom-phrase match → severity → fixed script |
-| Alert | Encrypted carer details; SMS / call / optional HTTPS. No audio uploaded |
+| Listen | The patient. Name, listening circle, one status word. |
+| Setup | The carer. Patient name, carer name, urgent phrase. |
+| Demo | Showing the idea. Run a critical phrase without using the microphone. |
+| History | Later review of what was heard and said. Not on the patient screen. |
+
+## How to try it
+
+You need an Android phone (Android 8 or newer) or the Android emulator.
 
 ```
-app/src/main/java/com/example/calmcompanion/
-  MainActivity.kt            UI
-  MainViewModel.kt           state, permissions
-  VoiceAssistantService.kt   mic session
-  SpeechEngine.kt            on-device STT
-  DistressDetector.kt        phrase → severity
-  ResponseEngine.kt          severity → script
-  SettingsRepository.kt      encrypted carer + triggers
-  AlertDispatcher.kt         retry, dedupe, SMS/HTTPS
+./gradlew assembleDemo
 ```
 
-## Try it
+That builds a **demo** APK: listening, names, and simulated carer alerts. It does not send SMS or place a call.
 
-Android 8+ phone, Android Studio, run `main`. Grant microphone. Use a **test** carer number.
+```
+./gradlew assembleRelease
+```
 
-`./gradlew assembleDebug` — share the APK by USB/AirDrop (GitHub often **blocks** APKs).
+That builds the **production** APK: real carer contact when setup and consent are complete.
 
-Not a medical device. Research / education prototype.
+Open the project in Android Studio if you prefer Run over the command line. Grant the microphone when asked.
+
+## For engineers
+
+```
+Listen  →  on-device speech-to-text  →  phrase rules  →  spoken script
+                                              ↓
+                                    carer alert (if allowed)
+```
+
+| File | Role |
+|---|---|
+| `MainActivity.kt` | Screens |
+| `MainViewModel.kt` | Permissions and service |
+| `VoiceAssistantService.kt` | Microphone session |
+| `SpeechEngine.kt` | On-device speech-to-text |
+| `DistressDetector.kt` | Phrase → severity |
+| `ResponseEngine.kt` | Severity → script |
+| `SettingsRepository.kt` | Encrypted names and phrases |
+| `AlertDispatcher.kt` | Alert delivery and retries |
+
+Demo vs production is a Gradle build type (`demo` / `release`). Demo mode never requests SMS.
+
+## Safety
+
+This is a research prototype for education and discussion. It does not diagnose, monitor vital signs, or replace calling emergency services.

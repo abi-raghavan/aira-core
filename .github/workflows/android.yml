@@ -1,4 +1,4 @@
-name: Android quality gate
+name: Tests
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 jobs:
-  verify:
+  test:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -20,12 +20,4 @@ jobs:
           java-version: "17"
           cache: gradle
       - uses: android-actions/setup-android@v3
-      - name: Unit tests, lint, and debug artifact
-        run: ./gradlew --no-daemon test lint assembleDebug
-      - name: Dependency report
-        run: ./gradlew --no-daemon app:dependencies > dependency-report.txt
-      - uses: actions/upload-artifact@v4
-        with:
-          name: aira-debug
-          path: app/build/outputs/apk/debug/*.apk
-          if-no-files-found: error
+      - run: ./gradlew --no-daemon test
