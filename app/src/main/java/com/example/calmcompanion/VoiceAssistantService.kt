@@ -162,8 +162,10 @@ class VoiceAssistantService : LifecycleService() {
                 if (!listeningActive) return@start
                 when {
                     message == "Listening…" -> scheduleRecognition()
-                    message.contains("not installed", ignoreCase = true) ||
-                        message.endsWith("(${android.speech.SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS}).") -> {
+                    // Nothing will improve by retrying: no speech service, no language
+                    // pack, or no microphone permission. Stay reachable by touch.
+                    message.contains("installed", ignoreCase = true) ||
+                        message.contains("Microphone access", ignoreCase = true) -> {
                         listeningActive = false
                         updateState(AssistantState.ERROR)
                         updateNotification(message)
