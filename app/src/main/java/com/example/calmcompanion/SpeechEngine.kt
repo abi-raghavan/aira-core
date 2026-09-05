@@ -10,7 +10,19 @@ import android.speech.SpeechRecognizer
 
 interface SpeechEngine {
     val isAvailable: Boolean
-    fun start(onText: (String) -> Unit, onError: (String) -> Unit)
+
+    /**
+     * @param onText a completed utterance.
+     * @param onPartialText words heard so far, so an urgent phrase can act before silence.
+     * @param onLevel microphone loudness from 0 to 1, for the listening animation.
+     */
+    fun start(
+        onText: (String) -> Unit,
+        onPartialText: (String) -> Unit,
+        onLevel: (Float) -> Unit,
+        onError: (String) -> Unit
+    )
+
     fun stop()
     fun destroy()
 }
@@ -36,16 +48,27 @@ class AndroidOfflineSpeechEngine(private val context: Context) : SpeechEngine {
     override val isAvailable: Boolean
         get() = (onDeviceAvailable && onDeviceUsable) || systemAvailable
 
-    override fun start(onText: (String) -> Unit, onError: (String) -> Unit) {
+    override fun start(
+        onText: (String) -> Unit,
+        onPartialText: (String) -> Unit,
+        onLevel: (Float) -> Unit,
+        onError: (String) -> Unit
+    ) {
         val useOnDevice = onDeviceAvailable && onDeviceUsable
         if (!useOnDevice && !systemAvailable) {
             onError("No speech service is installed. Touch the circle for support.")
             return
         }
-        listen(useOnDevice, onText, onError)
+        listen(useOnDevice, onText, onPartialText, onLevel, onError)
     }
 
-    private fun listen(onDevice: Boolean, onText: (String) -> Unit, onError: (String) -> Unit) {
+    private fun listen(
+        onDevice: Boolean,
+        onText: (String) -> Unit,
+        onPartialText: (String) -> Unit,
+        onLevel: (Float) -> Unit,
+        onError: (String) -> Unit
+    ) {
         stop()
         listeningOnDevice = onDevice
         recognizer = if (onDevice && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -55,18 +78,28 @@ class AndroidOfflineSpeechEngine(private val context: Context) : SpeechEngine {
         }
         recognizer?.setRecognitionListener(object : RecognitionListener {
             override fun onResults(results: Bundle?) {
-                val text = results
-                    ?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-                    ?.firstOrNull()
+                onLevel(0f)
+                val text = results.firstResult()
                 if (text.isNullOrBlank()) onError("Listening…") else onText(text)
             }
 
+            override fun onPartialResults(partialResults: Bundle?) {
+                partialResults.firstResult()?.takeIf(String::isNotBlank)?.let(onPartialText)
+            }
+
+            override fun onRmsChanged(rmsdB: Float) {
+                // Android reports about 0 dB for a quiet room and 10 dB for loud
+                // speech, so a quiet room must read as zero rather than a low hum.
+                onLevel((rmsdB / 10f).coerceIn(0f, 1f))
+            }
+
             override fun onError(error: Int) {
+                onLevel(0f)
                 // The on-device engine could not serve this language. Retry once with
                 // whichever recognizer the system provides.
                 if (listeningOnDevice && error in ON_DEVICE_FALLBACK_ERRORS && systemAvailable) {
                     onDeviceUsable = false
-                    listen(onDevice = false, onText = onText, onError = onError)
+                    listen(false, onText, onPartialText, onLevel, onError)
                     return
                 }
                 onError(messageFor(error))
@@ -74,10 +107,8 @@ class AndroidOfflineSpeechEngine(private val context: Context) : SpeechEngine {
 
             override fun onReadyForSpeech(params: Bundle?) = Unit
             override fun onBeginningOfSpeech() = Unit
-            override fun onRmsChanged(rmsdB: Float) = Unit
             override fun onBufferReceived(buffer: ByteArray?) = Unit
             override fun onEndOfSpeech() = Unit
-            override fun onPartialResults(partialResults: Bundle?) = Unit
             override fun onEvent(eventType: Int, params: Bundle?) = Unit
         })
         recognizer?.startListening(
@@ -85,11 +116,21 @@ class AndroidOfflineSpeechEngine(private val context: Context) : SpeechEngine {
                 putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
                 putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US")
                 putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, onDevice)
-                putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, false)
+                putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
                 putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
+                // Tolerate the pauses of someone who is distressed or slow to speak.
+                putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 8_000)
+                putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 2_000)
+                putExtra(
+                    RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS,
+                    2_000
+                )
             }
         )
     }
+
+    private fun Bundle?.firstResult(): String? =
+        this?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)?.firstOrNull()
 
     private fun messageFor(error: Int): String = when (error) {
         SpeechRecognizer.ERROR_NO_MATCH,

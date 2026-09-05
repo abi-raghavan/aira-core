@@ -55,6 +55,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _latestAlert = MutableStateFlow<AlertEvent?>(null)
     val latestAlert: StateFlow<AlertEvent?> = _latestAlert.asStateFlow()
 
+    /** Microphone loudness from 0 to 1, drives the listening animation. */
+    private val _audioLevel = MutableStateFlow(0f)
+    val audioLevel: StateFlow<Float> = _audioLevel.asStateFlow()
+
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             if (cleared) {
@@ -74,7 +78,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     _currentStatus.value = statusFor(it)
                 },
                 onMessageReceived = { addMessage(it, true) },
-                onResponseGenerated = { addMessage(it, false) }
+                onResponseGenerated = { addMessage(it, false) },
+                onLevelChanged = { _audioLevel.value = it }
             )
             when (pendingAction) {
                 PendingAction.LISTEN -> voiceService?.startListening()
@@ -209,6 +214,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         context.stopService(serviceIntent)
         voiceService = null
         _isServiceRunning.value = false
+        _audioLevel.value = 0f
         _assistantState.value = AssistantState.IDLE
     }
 

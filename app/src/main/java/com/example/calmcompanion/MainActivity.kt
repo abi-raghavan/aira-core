@@ -10,9 +10,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -51,11 +53,16 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
@@ -70,7 +77,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.calmcompanion.ui.theme.CalmCompanionTheme
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.StateFlow
+import kotlin.math.PI
+import kotlin.math.sin
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,6 +106,7 @@ fun AiraApp(viewModel: MainViewModel = viewModel()) {
     val messages by viewModel.conversationHistory.collectAsStateCompat()
     val settings by viewModel.settings.collectAsStateCompat()
     val latestAlert by viewModel.latestAlert.collectAsStateCompat()
+    val audioLevel by viewModel.audioLevel.collectAsStateCompat()
     var screen by remember { mutableStateOf(Screen.READY) }
 
     val permissionsLauncher = rememberLauncherForActivityResult(
@@ -135,6 +146,7 @@ fun AiraApp(viewModel: MainViewModel = viewModel()) {
                 status = status,
                 hasPermission = hasPermission,
                 settings = settings,
+                level = audioLevel,
                 onRequestPermissions = {
                     val permissions = buildList {
                         add(Manifest.permission.RECORD_AUDIO)
@@ -182,6 +194,7 @@ private fun ReadyScreen(
     status: String,
     hasPermission: Boolean,
     settings: CaregiverSettings,
+    level: Float,
     onRequestPermissions: () -> Unit,
     onCalmTouch: () -> Unit,
     onStart: () -> Unit
@@ -195,6 +208,7 @@ private fun ReadyScreen(
             assistantState = assistantState,
             hasPermission = hasPermission,
             patientName = settings.patientName,
+            level = level,
             onTouch = onCalmTouch
         )
         Spacer(Modifier.height(24.dp))
@@ -272,19 +286,28 @@ private fun CalmSurface(
     assistantState: AssistantState,
     hasPermission: Boolean,
     patientName: String,
+    level: Float,
     onTouch: () -> Unit
 ) {
     val haptics = LocalHapticFeedback.current
     val breathing = rememberInfiniteTransition(label = "breath")
-    val pulse by breathing.animateFloat(
+    val breath by breathing.animateFloat(
         initialValue = 0.94f,
         targetValue = 1f,
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 4000, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
         ),
-        label = "pulse"
+        label = "breath"
     )
+    val listening = assistantState == AssistantState.LISTENING
+    // While listening the circle answers the voice; otherwise it keeps breathing.
+    val voice by animateFloatAsState(
+        targetValue = if (listening) level else 0f,
+        animationSpec = tween(120),
+        label = "voice"
+    )
+    val pulse = if (listening) 0.94f + 0.06f * voice else breath
 
     val headline = when {
         !hasPermission -> "I'm here"
@@ -322,9 +345,80 @@ private fun CalmSurface(
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 textAlign = TextAlign.Center
             )
+            Spacer(Modifier.height(20.dp))
+            VoiceWave(
+                level = level,
+                active = listening,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.fillMaxWidth(0.62f).height(64.dp)
+            )
         }
     }
 }
+
+/**
+ * A live waveform of what the microphone is hearing. Each bar is one recent
+ * loudness sample, so the wave scrolls while someone speaks and rests flat in
+ * silence.
+ */
+@Composable
+private fun VoiceWave(
+    level: Float,
+    active: Boolean,
+    color: Color,
+    modifier: Modifier = Modifier
+) {
+    val latest by rememberUpdatedState(level)
+    var samples by remember { mutableStateOf(List(BAR_COUNT) { 0f }) }
+
+    LaunchedEffect(active) {
+        if (!active) {
+            samples = List(BAR_COUNT) { 0f }
+            return@LaunchedEffect
+        }
+        while (true) {
+            delay(60)
+            samples = samples.drop(1) + latest
+        }
+    }
+
+    // A slow ripple travels along the bars in silence, so the wave still looks awake.
+    val ripple = rememberInfiniteTransition(label = "ripple")
+    val phase by ripple.animateFloat(
+        initialValue = 0f,
+        targetValue = (2 * PI).toFloat(),
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1800, easing = LinearEasing)
+        ),
+        label = "phase"
+    )
+
+    Canvas(modifier) {
+        val slot = size.width / BAR_COUNT
+        val barWidth = slot * 0.5f
+        val corner = CornerRadius(barWidth / 2f)
+        samples.forEachIndexed { index, sample ->
+            val idle = if (active) {
+                0.12f + 0.2f * (sin(phase + index * 0.6f) + 1f) / 2f
+            } else {
+                0.07f
+            }
+            val amplitude = maxOf(sample, idle)
+            val barHeight = (size.height * amplitude).coerceAtMost(size.height)
+            drawRoundRect(
+                color = color,
+                topLeft = Offset(
+                    x = index * slot + (slot - barWidth) / 2f,
+                    y = (size.height - barHeight) / 2f
+                ),
+                size = Size(barWidth, barHeight),
+                cornerRadius = corner
+            )
+        }
+    }
+}
+
+private const val BAR_COUNT = 18
 
 @Composable
 private fun DemoScreen(

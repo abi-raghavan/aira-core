@@ -40,10 +40,16 @@ class VoiceAssistantService : LifecycleService() {
     private var listeningActive = false
     private var currentState = AssistantState.IDLE
     private var lastDistressAt = 0L
+    private var recognitionStartedAt = 0L
+    private var restartDelayMs = MIN_RESTART_MS
+    private var lastRecognitionSignalAt = 0L
+    private val recognitionRunnable = Runnable { beginRecognition() }
+    private val stallWatchdog = Runnable { restartIfStalled() }
     private var audioFocusRequest: AudioFocusRequest? = null
     private var onStateChanged: (AssistantState) -> Unit = {}
     private var onMessageReceived: (String) -> Unit = {}
     private var onResponseGenerated: (String) -> Unit = {}
+    private var onLevelChanged: (Float) -> Unit = {}
 
     override fun onCreate() {
         super.onCreate()
@@ -104,16 +110,19 @@ class VoiceAssistantService : LifecycleService() {
     fun setCallbacks(
         onStateChanged: (AssistantState) -> Unit,
         onMessageReceived: (String) -> Unit,
-        onResponseGenerated: (String) -> Unit
+        onResponseGenerated: (String) -> Unit,
+        onLevelChanged: (Float) -> Unit = {}
     ) {
         this.onStateChanged = onStateChanged
         this.onMessageReceived = onMessageReceived
         this.onResponseGenerated = onResponseGenerated
+        this.onLevelChanged = onLevelChanged
         onStateChanged(currentState)
     }
 
     fun startListening() {
         listeningActive = true
+        restartDelayMs = MIN_RESTART_MS
         requestAudioFocus()
         beginRecognition()
     }
@@ -124,6 +133,7 @@ class VoiceAssistantService : LifecycleService() {
         speechEngine.stop()
         tts?.stop()
         abandonAudioFocus()
+        onLevelChanged(0f)
         updateState(AssistantState.IDLE)
         updateNotification("Paused — open AIRA to restart")
     }
@@ -156,12 +166,34 @@ class VoiceAssistantService : LifecycleService() {
         if (!listeningActive) return
         updateState(AssistantState.LISTENING)
         updateNotification("Listening privately on this device")
+        recognitionStartedAt = System.currentTimeMillis()
+        armStallWatchdog()
         speechEngine.start(
-            onText = { if (listeningActive) processText(it, resumeListening = true) },
+            onText = {
+                noteRecognitionSignal()
+                restartDelayMs = MIN_RESTART_MS
+                if (listeningActive) processText(it, resumeListening = true)
+            },
+            onPartialText = { partial ->
+                noteRecognitionSignal()
+                restartDelayMs = MIN_RESTART_MS
+                // Act on an urgent phrase as soon as it is heard, rather than waiting
+                // for the speaker to fall silent.
+                if (listeningActive && isUrgent(partial)) {
+                    processText(partial, resumeListening = true)
+                }
+            },
+            onLevel = { levelOrZero ->
+                noteRecognitionSignal()
+                if (levelOrZero > SPEECH_LEVEL) restartDelayMs = MIN_RESTART_MS
+                onLevelChanged(if (listeningActive) levelOrZero else 0f)
+            },
             onError = { message ->
+                noteRecognitionSignal()
                 if (!listeningActive) return@start
+                onLevelChanged(0f)
                 when {
-                    message == "Listening…" -> scheduleRecognition()
+                    message == "Listening…" -> scheduleRecognition(nextRestartDelay())
                     // Nothing will improve by retrying: no speech service, no language
                     // pack, or no microphone permission. Stay reachable by touch.
                     message.contains("installed", ignoreCase = true) ||
@@ -180,9 +212,56 @@ class VoiceAssistantService : LifecycleService() {
         )
     }
 
+    private fun noteRecognitionSignal() {
+        lastRecognitionSignalAt = System.currentTimeMillis()
+    }
+
+    private fun armStallWatchdog() {
+        noteRecognitionSignal()
+        handler.removeCallbacks(stallWatchdog)
+        handler.postDelayed(stallWatchdog, STALL_TIMEOUT_MS)
+    }
+
+    /**
+     * Some recognizers accept a session and then go quiet — no audio, no result, no
+     * error. Restart rather than leave the screen claiming to listen.
+     */
+    private fun restartIfStalled() {
+        if (!listeningActive) return
+        if (System.currentTimeMillis() - lastRecognitionSignalAt >= STALL_TIMEOUT_MS) {
+            beginRecognition()
+        } else {
+            handler.postDelayed(stallWatchdog, STALL_TIMEOUT_MS)
+        }
+    }
+
+    /**
+     * Restart quickly after a normal silence, but back off when the recognizer keeps
+     * ending instantly — a dead microphone must not become a restart loop.
+     */
+    private fun nextRestartDelay(): Long {
+        val listenedFor = System.currentTimeMillis() - recognitionStartedAt
+        restartDelayMs = if (listenedFor < SHORT_SESSION_MS) {
+            (restartDelayMs * 2).coerceAtMost(MAX_RESTART_MS)
+        } else {
+            MIN_RESTART_MS
+        }
+        return restartDelayMs
+    }
+
+    private fun isUrgent(text: String): Boolean {
+        val settings = settingsRepository.load()
+        return detector.detect(
+            text = text,
+            customTriggers = settings.customTriggers,
+            customCriticalTriggers = settings.customCriticalTriggers
+        ).severity >= DistressSeverity.HIGH
+    }
+
     private fun processText(text: String, resumeListening: Boolean = listeningActive) {
         listeningActive = resumeListening
         speechEngine.stop()
+        onLevelChanged(0f)
         updateState(AssistantState.PROCESSING)
         onMessageReceived(text)
 
@@ -247,8 +326,9 @@ class VoiceAssistantService : LifecycleService() {
     }
 
     private fun scheduleRecognition(delayMs: Long = 800) {
-        handler.removeCallbacksAndMessages(null)
-        if (listeningActive) handler.postDelayed(::beginRecognition, delayMs)
+        handler.removeCallbacks(recognitionRunnable)
+        handler.removeCallbacks(stallWatchdog)
+        if (listeningActive) handler.postDelayed(recognitionRunnable, delayMs)
     }
 
     private fun updateState(state: AssistantState) {
@@ -357,6 +437,11 @@ class VoiceAssistantService : LifecycleService() {
         private const val NOTIFICATION_ID = 410
         private const val UTTERANCE_ID = "aira_support"
         private const val REPEAT_WINDOW_MS = 2 * 60 * 1000L
+        private const val MIN_RESTART_MS = 150L
+        private const val MAX_RESTART_MS = 3_000L
+        private const val SHORT_SESSION_MS = 700L
+        private const val SPEECH_LEVEL = 0.25f
+        private const val STALL_TIMEOUT_MS = 12_000L
         @Volatile
         var isRunning: Boolean = false
             private set
